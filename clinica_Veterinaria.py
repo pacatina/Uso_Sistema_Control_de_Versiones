@@ -21,6 +21,7 @@ class Recepcionista(Persona):
     def atender_mascota(self):
         return f"{self.nombre} está atendiendo a una mascota."
 
+# CLIENTES
 class Cliente(Persona):
     def __init__(self, nombre, documento):
 
@@ -43,6 +44,7 @@ class Cliente(Persona):
     def mostrar_rol(self):
         return f"Cliente {self.nombre}"
 
+# MASCOTAS
 class Mascota:
     def __init__(self, nombre, especie, edad, peso):
 
@@ -50,22 +52,18 @@ class Mascota:
             raise ValueError(
                 "El nombre de la mascota es obligatorio"
             )
-
         if not especie.strip():
             raise ValueError(
                 "La especie de la mascota es obligatoria"
             )
-
         if edad < 0:
             raise ValueError(
                 "La edad no puede ser negativa"
             )
-
         if peso <= 0:
             raise ValueError(
                 "El peso debe ser mayor que cero"
             )
-
         self.nombre = nombre
         self.especie = especie
         self.edad = edad
@@ -79,49 +77,52 @@ class Mascota:
             f"Peso: {self.peso} kg"
         )
 
-# CONSULTA
+#CONSULTAS        
 class Consulta:
     def __init__(self, veterinario, mascota, motivo):
-        self.mascota = mascota
+        if not motivo.strip():
+            raise ValueError(
+                "El motivo de la consulta es obligatorio"
+            )
         self.veterinario = veterinario
+        self.mascota = mascota
         self.motivo = motivo
         self.tratamientos = []
         self.diagnostico = ""
-
+    def mostrar_consulta(self):
+        return (
+            f"Veterinario: {self.veterinario.nombre}\n"
+            f"Mascota: {self.mascota.nombre}\n"
+            f"Motivo: {self.motivo}"
+        )
     def crear_tratamiento(self, descripcion, costo):
         tratamiento = Tratamiento(descripcion, costo)
         self.tratamientos.append(tratamiento)
-
     def total(self):
-        return sum(t.costo for t in self.tratamientos)
-
+        return sum(
+            tratamiento.costo
+            for tratamiento in self.tratamientos
+        )
+    def mostrar_total(self):
+        return f"Total de la consulta: ${self.total()}"
+    
 # TRATAMIENTO
 class Tratamiento:
     def __init__(self, descripcion, costo):
+
+        if not descripcion.strip():
+            raise ValueError(
+                "La descripción del tratamiento es obligatoria"
+            )
+        if costo < 0:
+            raise ValueError(
+                "El costo no puede ser negativo"
+            )
         self.descripcion = descripcion
         self.costo = costo
-        
     def mostrar_tratamiento(self):
         return f"{self.descripcion} - ${self.costo}"
-
-# METODO DE PAGO (ABSTRACTO)
-class MetodoPago(ABC):
-    @abstractmethod
-    def procesar_pago(self, monto):
-        pass
-
-class PagoEfectivo(MetodoPago):
-    def procesar_pago(self, monto):
-        return f"Pago en efectivo realizado: ${monto}"
-
-class PagoTarjeta(MetodoPago):
-    def procesar_pago(self, monto):
-        print(f"Pago con tarjeta realizado: ${monto}")
-
-class Transferencia(MetodoPago):
-    def procesar_pago(self, monto):
-        print(f"Transferencia realizada: ${monto}")
-
+    
 # FACTURA
 class Factura:
     def __init__(self, consulta, metodo_pago):
@@ -139,26 +140,26 @@ if __name__ == "__main__":
     cliente = Cliente("Esperanza", "6235")
     print(cliente.mostrar_rol())
     
-print("\n--- PRUEBAS HU1: REGISTRO DE CLIENTES ---")
+    # PRUEBAS HISTORIA 1
+    print("\n--- PRUEBAS HU1: REGISTRO DE CLIENTES ---")
 
-# Prueba 1: registrar un cliente correctamente
-cliente_prueba = Cliente("Carlos", "12345")
+    # Prueba 1: registrar un cliente correctamente
+    cliente_prueba = Cliente("Carlos", "12345")
 
-print("Cliente registrado:", cliente_prueba.mostrar_rol())
-print("Documento:", cliente_prueba.documento)
-    
-# Prueba 2: validar nombre vacío
-try:
-    Cliente("", "12345")
-except ValueError as error:
-    print("Validación de nombre:", error)
+    print("Cliente registrado:", cliente_prueba.mostrar_rol())
+    print("Documento:", cliente_prueba.documento)
+        
+    # Prueba 2: validar nombre vacío
+    try:
+        Cliente("", "12345")
+    except ValueError as error:
+        print("Validación de nombre:", error)
 
-# Prueba 3: validar documento vacío
-try:
-    Cliente("Carlos", "")
-except ValueError as error:
-    print("Validación de documento:", error)
-
+    # Prueba 3: validar documento vacío
+    try:
+        Cliente("Carlos", "")
+    except ValueError as error:
+        print("Validación de documento:", error)
 
     # 2. Registrar dos mascotas
     masc1 = Mascota("Luna", "Perro", 5, 10)
@@ -171,6 +172,7 @@ except ValueError as error:
     for esp in cliente.mascotas:
         print(esp.mostrar_info())
         
+    # PRUEBAS HISTORIA 2
     print("\n--- PRUEBAS HU2: REGISTRO DE MASCOTAS ---")
 
     # Prueba 1: crear dos mascotas
@@ -187,7 +189,6 @@ except ValueError as error:
     for mascota in cliente_prueba.mascotas:
         print("Mascota:", mascota.nombre, "-", mascota.especie)
     
-    
     # 3. Crear veterinario
     vete = Veterinario("Dr. Marcos", "015")
     print("\n" + vete.mostrar_rol())
@@ -197,7 +198,23 @@ except ValueError as error:
 
     # 5. Crear consulta
     consulta = Consulta(vete, masc1, "Revision periodica anual")
+    
+    # PRUEBAS HISTORIA 3
+    print("\n--- PRUEBAS HU3: REGISTRO DE CONSULTAS ---")
 
+    # Crear veterinario para la prueba
+    veterinario_prueba = Veterinario("Dr. Marcos", "015")
+
+    # Crear consulta para la mascota Luna
+    consulta_prueba = Consulta(
+        veterinario_prueba,
+        mascota1,
+        "Revisión anual"
+    )
+    print("Veterinario:", consulta_prueba.veterinario.nombre)
+    print("Mascota:", consulta_prueba.mascota.nombre)
+    print("Motivo:", consulta_prueba.motivo)
+    
     # 6. Crear tratamientos
     consulta.crear_tratamiento("Vacuna", 50)
     consulta.crear_tratamiento("Desparasitación", 30)
@@ -205,12 +222,48 @@ except ValueError as error:
     print("\nTratamientos:")
     for trat in consulta.tratamientos:
         print(trat.mostrar_tratamiento())
+        
+    # PRUEBAS HISTORIA 4
+    print("\n--- PRUEBAS HU4: REGISTRO DE TRATAMIENTOS ---")
+
+    # Crear y agregar tratamientos a la consulta
+    consulta_prueba.crear_tratamiento("Vacunación", 50)
+    consulta_prueba.crear_tratamiento("Desparasitación", 30)
+
+    # Mostrar tratamientos registrados
+    for tratamiento in consulta_prueba.tratamientos:
+        print(
+            "Tratamiento:",
+            tratamiento.descripcion,
+            "- Costo: $",
+            tratamiento.costo
+        )
 
     # 7. Calcular total
     total = consulta.total()
     print(consulta.mostrar_total())
     
-    # 8. Pagar con método de pago
+    # PRUEBAS HISTORIA 5
+    print("\n--- PRUEBAS HU5: CALCULO DEL TOTAL ---")
+
+    # Prueba 1: sumar los tratamientos registrados
+    print("Total de la consulta:", consulta_prueba.total())
+
+    # Prueba 2: agregar un nuevo tratamiento
+    consulta_prueba.crear_tratamiento("Curación", 20)
+
+    print("Total actualizado:", consulta_prueba.total())
+
+    # Prueba 3: consulta sin tratamientos
+    consulta_vacia = Consulta(
+        veterinario_prueba,
+        mascota2,
+        "Consulta de valoración"
+    )
+    
+    print("Total sin tratamientos:", consulta_vacia.total())
+    
+    """# 8. Pagar con método de pago
     pago = PagoEfectivo()
     factura = Factura(consulta, pago)
     print("\nPago en efectivo:")
@@ -220,4 +273,6 @@ except ValueError as error:
     print("\nPago con tarjeta")
     factura.metodo_pago = PagoTarjeta()
     factura.calcular_total()
+    """
+    
    
