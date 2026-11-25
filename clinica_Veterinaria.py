@@ -23,6 +23,17 @@ class Recepcionista(Persona):
 
 class Cliente(Persona):
     def __init__(self, nombre, documento):
+
+        if not nombre.strip():
+            raise ValueError(
+                "El nombre del cliente no puede estar vacío"
+            )
+
+        if not documento.strip():
+            raise ValueError(
+                "El documento del cliente es obligatorio"
+            )
+
         super().__init__(nombre, documento)
         self.mascotas = []
 
@@ -113,7 +124,27 @@ if __name__ == "__main__":
     print("\nMascotas del cliente:")
     for esp in cliente.mascotas:
         print(esp.mostrar_info())
+    
+    print("\n--- PRUEBAS HU1: REGISTRO DE CLIENTES ---")
 
+# Prueba 1: registrar un cliente correctamente
+cliente_prueba = Cliente("Carlos", "12345")
+
+print("Cliente registrado:", cliente_prueba.mostrar_rol())
+print("Documento:", cliente_prueba.documento)
+
+# Prueba 2: validar nombre vacío
+try:
+    Cliente("", "12345")
+except ValueError as error:
+    print("Validación de nombre:", error)
+
+# Prueba 3: validar documento vacío
+try:
+    Cliente("Carlos", "")
+except ValueError as error:
+    print("Validación de documento:", error)
+        
     # 3. Crear veterinario
     vete = Veterinario("Dr. Marcos", "015")
     print("\n" + vete.mostrar_rol())
@@ -134,8 +165,8 @@ if __name__ == "__main__":
 
     # 7. Calcular total
     total = consulta.total()
-    print(f"\nTotal consulta: ${total}")
-
+    print(consulta.mostrar_total())
+    
     # 8. Pagar con método de pago
     pago = PagoEfectivo()
     factura = Factura(consulta, pago)
