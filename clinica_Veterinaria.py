@@ -43,16 +43,41 @@ class Cliente(Persona):
     def mostrar_rol(self):
         return f"Cliente {self.nombre}"
 
-# MASCOTA
 class Mascota:
     def __init__(self, nombre, especie, edad, peso):
+
+        if not nombre.strip():
+            raise ValueError(
+                "El nombre de la mascota es obligatorio"
+            )
+
+        if not especie.strip():
+            raise ValueError(
+                "La especie de la mascota es obligatoria"
+            )
+
+        if edad < 0:
+            raise ValueError(
+                "La edad no puede ser negativa"
+            )
+
+        if peso <= 0:
+            raise ValueError(
+                "El peso debe ser mayor que cero"
+            )
+
         self.nombre = nombre
         self.especie = especie
         self.edad = edad
         self.peso = peso
-        
+
     def mostrar_info(self):
-        return f"Nombre: {self.nombre}, Especie: {self.especie}, Edad: {self.edad}, Peso: {self.peso}"
+        return (
+            f"Nombre: {self.nombre}, "
+            f"Especie: {self.especie}, "
+            f"Edad: {self.edad}, "
+            f"Peso: {self.peso} kg"
+        )
 
 # CONSULTA
 class Consulta:
@@ -113,26 +138,15 @@ if __name__ == "__main__":
     # 1. Crear cliente
     cliente = Cliente("Esperanza", "6235")
     print(cliente.mostrar_rol())
-
-    # 2. Registrar dos mascotas
-    masc1 = Mascota("Luna", "Perro", 5, 10)
-    masc2 = Mascota("Tin", "Gato", 3, 4)
-
-    cliente.agregar_mascota(masc1)
-    cliente.agregar_mascota(masc2)
-
-    print("\nMascotas del cliente:")
-    for esp in cliente.mascotas:
-        print(esp.mostrar_info())
     
-    print("\n--- PRUEBAS HU1: REGISTRO DE CLIENTES ---")
+print("\n--- PRUEBAS HU1: REGISTRO DE CLIENTES ---")
 
 # Prueba 1: registrar un cliente correctamente
 cliente_prueba = Cliente("Carlos", "12345")
 
 print("Cliente registrado:", cliente_prueba.mostrar_rol())
 print("Documento:", cliente_prueba.documento)
-
+    
 # Prueba 2: validar nombre vacío
 try:
     Cliente("", "12345")
@@ -144,11 +158,40 @@ try:
     Cliente("Carlos", "")
 except ValueError as error:
     print("Validación de documento:", error)
+
+
+    # 2. Registrar dos mascotas
+    masc1 = Mascota("Luna", "Perro", 5, 10)
+    masc2 = Mascota("Tin", "Gato", 3, 4)
+
+    cliente.agregar_mascota(masc1)
+    cliente.agregar_mascota(masc2)
+
+    print("\nMascotas del cliente:")
+    for esp in cliente.mascotas:
+        print(esp.mostrar_info())
         
+    print("\n--- PRUEBAS HU2: REGISTRO DE MASCOTAS ---")
+
+    # Prueba 1: crear dos mascotas
+    mascota1 = Mascota("Luna", "Perro", 5, 10)
+    mascota2 = Mascota("Tin", "Gato", 3, 4)
+
+    # Prueba 2: asociar las mascotas al cliente
+    cliente_prueba.agregar_mascota(mascota1)
+    cliente_prueba.agregar_mascota(mascota2)
+
+    print("Cliente:", cliente_prueba.nombre)
+    print("Cantidad de mascotas:", len(cliente_prueba.mascotas))
+
+    for mascota in cliente_prueba.mascotas:
+        print("Mascota:", mascota.nombre, "-", mascota.especie)
+    
+    
     # 3. Crear veterinario
     vete = Veterinario("Dr. Marcos", "015")
     print("\n" + vete.mostrar_rol())
-
+    
     # 4. Veterinario atiende una mascota
     print(f"{vete.nombre} atiende a {masc1.nombre}")
 
