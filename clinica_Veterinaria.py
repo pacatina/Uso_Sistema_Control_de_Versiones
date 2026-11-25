@@ -260,19 +260,6 @@ if __name__ == "__main__":
         mascota2,
         "Consulta de valoración"
     )
-    
     print("Total sin tratamientos:", consulta_vacia.total())
-    
-    """# 8. Pagar con método de pago
-    pago = PagoEfectivo()
-    factura = Factura(consulta, pago)
-    print("\nPago en efectivo:")
-    factura.calcular_total()
-
-    # 9. Cambiar método de pago
-    print("\nPago con tarjeta")
-    factura.metodo_pago = PagoTarjeta()
-    factura.calcular_total()
-    """
     
    
