@@ -296,7 +296,7 @@ class Consulta:
         )
     def mostrar_total(self):
         return f"Total de la consulta: ${self.total()}"
-
+        
 Explicación de los Cambios HU5:
 
 self.tratamientos: Contiene todos los tratamientos asociados a la consulta.
